@@ -24,7 +24,8 @@ void CL();//创建保存链表
 void Save();//保存提示框
 void FileSave();//文件保存
 void FileRead(struct BOOK* HEAD);//文件读取
-void DelRe(struct BOOK*s);//删除重复
+void DelRe(struct BOOK* HEAD);//删除重复
+void DelBook(struct BOOK* HEAD);//删除图书（编号或书名）
 //主函数：
 
 
@@ -33,20 +34,22 @@ int main(void)
 {
 	head = (struct BOOK*)malloc(sizeof(struct BOOK));
 	head->next = NULL;
-	JM();
+	/*JM();
 	if (ch == '1')
 	{
 		CL();
 	}
 	else if (ch == '2')
 	{
+		FileRead(head);
 		DelRe(head);
 	}
 	else if (ch == '6')
 	{
 		return 0;
-	}
+	}*/
 	FileRead(head);
+	DelBook(head);
 	output(head);
 	return 0;
 
@@ -235,31 +238,78 @@ void FileRead(struct BOOK* HEAD)
 	}
 }
 
-void DelRe(struct BOOK* s)
+void DelRe(struct BOOK* HEAD)
 {
-	if (s->next != NULL)
+	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
+	struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
+	struct BOOK* q2 = (struct BOOK*)malloc(sizeof(struct BOOK));
+	if (HEAD->next != NULL)
 	{
-		struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
-		struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
-		struct BOOK* q2 = (struct BOOK*)malloc(sizeof(struct BOOK));
-		p = s->next;
-		while (p->next != NULL)
+		q = HEAD->next;
+		while (q->next != NULL)
 		{
-			q1 = p;
-			q2 = p->next;
+			q1 = q;
+			q2 = q->next;
 			while (q2->next != NULL)
 			{
-				if (p->bianhao == q2->bianhao)
+				if (strcmp(q->bianhao,q2->bianhao)==0)
 				{
 					q1->next = q2->next;
-					q2 = q2->next;
+					continue;
 				}
+				else
+				{
+					q1 = q1->next;
+				}
+				q2 = q2->next;
 			}
-			if (p->bianhao == q2->bianhao)
+			if (strcmp(q->bianhao,q2->bianhao)==0)
 			{
-				q1->next = q2->next;
+				q1->next = NULL;
 			}
-			p = p->next;
+			q = q->next;
 		}
+	}
+	output(head);
+	/*FILE* fp = fopen("bookinformation.txt", "wt");
+	if (fp == NULL)
+	{
+		printf("打开文件失败！\n");
+		return 0;
+	}
+	for (int i = 0; i < a; i++)
+	{
+		fprintf(fp, "%s %s %s %s %s %s %g\n", q->bianhao, q->bookname, q->writer, q->leibie, q->chubanfang, q->data, q->price);
+		q = q->next;
+	}
+	fclose(fp);
+	*/
+}
+
+void DelBook(struct BOOK* HEAD)
+{
+	char ch[50];
+	struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
+	q1->next = NULL;
+	struct BOOK* q2 = (struct BOOK*)malloc(sizeof(struct BOOK));
+	q2->next = NULL;
+	q1 = HEAD;
+	gotoxy(75, 20); printf("请输入要删除的图书的编号或书名：");
+	scanf("%s", ch);
+	while (q1->next != NULL)
+	{
+		q2 = q1->next;
+		if (q2->next!=NULL && (strcmp(ch, q2->bianhao) == 0 || strcmp(ch, q2->bookname) == 0))
+		{
+			q1->next = q2->next;
+			q2 = q2->next;
+			continue;
+		}
+		else if (q2->next == NULL && (strcmp(ch, q2->bianhao) == 0 || strcmp(ch, q2->bookname) == 0))
+		{
+			q1->next = NULL;
+			break;
+		}
+		q1 = q1->next;
 	}
 }
