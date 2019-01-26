@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 char ch,c,h;//选择
+int z=0;//接受函数返回值
 struct BOOK
 {
 	char bianhao[11];
@@ -27,7 +28,7 @@ void Del();//删除提示框
 void Succeed();//成功
 void FileSave();//文件保存
 void PXJM();//排序界面
-void FileRead(struct BOOK* HEAD);//文件读取
+int FileRead(struct BOOK* HEAD);//文件读取
 void DelRe(struct BOOK* HEAD);//删除重复
 void DelBook(struct BOOK* HEAD);//删除图书（编号或书名）
 void PX_b(struct BOOK* HEAD);//编号排序
@@ -49,15 +50,22 @@ int main(void)
 	{
 		CL();
 		system("cls");
-		gotoxy(80, 11); printf("按任意键返回主界面！");
+		gotoxy(80, 25); printf("按任意键返回主界面！");
 		getch();
 		goto loop;
 	}
 	else if (ch == '2')
 	{
-		
-		Check();
-		gotoxy(80,11); printf("按任意键返回主界面！");
+		if (FileRead(head) == -1)
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+		}
+		else
+		{
+			Check();
+		}
+		gotoxy(80,25); printf("按任意键返回主界面！");
 		getch();
 		goto loop;
 	}
@@ -72,12 +80,21 @@ int main(void)
 			h = getch();
 			if (h == 'y' || h == 'Y')
 			{
-				FileRead(head);
-				DelRe(head);
-				Succeed();
-				Sleep(1000);
 				system("cls");
-				gotoxy(80, 23); printf("按任意键返回主界面！");
+				if (FileRead(head) == -1)
+				{
+					system("cls");
+					gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+				}
+				else
+				{
+					FileRead(head);
+					DelRe(head);
+					Succeed();
+					Sleep(1000);
+					system("cls");
+				}
+				gotoxy(80, 25); printf("按任意键返回主界面！");
 				getch();
 				goto loop;
 			}
@@ -97,9 +114,17 @@ int main(void)
 		else if (c == '2')
 		{
 			system("cls");
-			FileRead(head);
-			DelBook(head);
-			gotoxy(80, 24); printf("按任意键返回主界面！");
+			if (FileRead(head) == -1)
+			{
+				system("cls");
+				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+			}
+			else
+			{
+				FileRead(head);
+				DelBook(head);
+			}
+			gotoxy(80, 25); printf("按任意键返回主界面！");
 			getch();
 			goto loop;
 		}
@@ -114,7 +139,15 @@ int main(void)
 	}
 	else if (ch == '4')
 	{
-		Change();
+		if (FileRead(head) == -1)
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+		}
+		else
+		{
+			Change();
+		}
 		gotoxy(80, 25); printf("按任意键返回主界面！");
 		getch();
 		goto loop;
@@ -127,18 +160,35 @@ int main(void)
 		c = getch();
 		if (c == '1')
 		{
-			FileRead(head);
-			PX_b(head);
-			output(head);
-			gotoxy(80, 25); printf("按任意键返回主界面！");
-			getch();
-			goto loop;
+			if (FileRead(head) == -1)
+			{
+				system("cls");
+				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+			}
+			else
+			{
+				FileRead(head);
+				PX_b(head);
+				output(head);
+			}
+				gotoxy(80, 25); printf("按任意键返回主界面！");
+				getch();
+				goto loop;
+			
 		}
 		else if (c == '2')
 		{
-			FileRead(head);
-			PX_p(head);
-			output(head);
+			if (FileRead(head) == -1)
+			{
+				system("cls");
+				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+			}
+			else
+			{
+				FileRead(head);
+				PX_p(head);
+				output(head);
+			}
 			gotoxy(80, 25); printf("按任意键返回主界面！");
 			getch();
 			goto loop;
@@ -340,31 +390,38 @@ void FileSave()
 	}
 }
 
-void FileRead(struct BOOK* HEAD)
+int FileRead(struct BOOK* HEAD)
 {
 	FILE *fp = fopen("bookinformation.txt", "rt");
-	if (fp == NULL)
+	if (fp = fopen("bookinformation.txt", "rt") == NULL)
 	{
-		printf("文件打开失败！\n");
-		return 0;
+		return -1;
 	}
-	struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
-	p->next = NULL;
-	while (!feof(fp))//判断是否读到文件尾
+	else
 	{
-		struct BOOK* s = (struct BOOK*)malloc(sizeof(struct BOOK));
-		fscanf(fp, "%s %s %s %s %s %s %f\n", s->bianhao, s->bookname, s->writer, s->leibie, s->chubanfang, s->data, &s->price);
-		if (HEAD->next == NULL)
+		if (fp == NULL)
 		{
-			HEAD->next = s;
-			s->next = NULL;
+			printf("文件打开失败！\n");
+			return 0;
 		}
-		else
+		struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
+		p->next = NULL;
+		while (!feof(fp))//判断是否读到文件尾
 		{
-			p->next = s;
-			s->next = NULL;
+			struct BOOK* s = (struct BOOK*)malloc(sizeof(struct BOOK));
+			fscanf(fp, "%s %s %s %s %s %s %f\n", s->bianhao, s->bookname, s->writer, s->leibie, s->chubanfang, s->data, &s->price);
+			if (HEAD->next == NULL)
+			{
+				HEAD->next = s;
+				s->next = NULL;
+			}
+			else
+			{
+				p->next = s;
+				s->next = NULL;
+			}
+			p = s;
 		}
-		p = s;
 	}
 }
 
