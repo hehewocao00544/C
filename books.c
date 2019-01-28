@@ -2,8 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <Windows.h>
-char ch,c,h;//选择
-int z=0;//接受函数返回值
+char ch, c, h;//选择
 struct BOOK
 {
 	char bianhao[11];
@@ -28,7 +27,7 @@ void Del();//删除提示框
 void Succeed();//成功
 void FileSave();//文件保存
 void PXJM();//排序界面
-int FileRead(struct BOOK* HEAD);//文件读取
+void FileRead(struct BOOK* HEAD);//文件读取
 void DelRe(struct BOOK* HEAD);//删除重复
 void DelBook(struct BOOK* HEAD);//删除图书（编号或书名）
 void PX_b(struct BOOK* HEAD);//编号排序
@@ -36,117 +35,110 @@ void PX_p(struct BOOK* HEAD);//价格排序
 //void PX_n(struct BOOK* HEAD);//书名排序
 void Check();//图书查询
 void Change();//图书信息修改
+int FRN();//判断是否文件为空
 //主函数：
-
-
 
 int main(void)
 {
+loop:
 	head = (struct BOOK*)malloc(sizeof(struct BOOK));
 	head->next = NULL;
-	loop:
 	JM();
 	if (ch == '1')
 	{
 		CL();
 		system("cls");
-		gotoxy(80, 25); printf("按任意键返回主界面！");
+		gotoxy(80, 11); printf("按任意键返回主界面！");
 		getch();
 		goto loop;
 	}
 	else if (ch == '2')
 	{
-		if (FileRead(head) == -1)
-		{
-			system("cls");
-			gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
-		}
-		else
+		if (FRN() == 0)
 		{
 			Check();
 		}
-		gotoxy(80,25); printf("按任意键返回主界面！");
+		else
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
+		}
+		gotoxy(80, 25); printf("按任意键返回主界面！");
 		getch();
 		goto loop;
 	}
 	else if (ch == '3')
 	{
-	loop1:
-		DelJM();
-		if (c == '1')
+		if (FRN() == 0)
 		{
-			loop3:
-			Del();
-			h = getch();
-			if (h == 'y' || h == 'Y')
+		loop1:
+			DelJM();
+			if (c == '1')
 			{
-				system("cls");
-				if (FileRead(head) == -1)
-				{
-					system("cls");
-					gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
-				}
-				else
+			loop3:
+				Del();
+				h = getch();
+				if (h == 'y' || h == 'Y')
 				{
 					FileRead(head);
 					DelRe(head);
 					Succeed();
 					Sleep(1000);
 					system("cls");
+					gotoxy(80, 23); printf("按任意键返回主界面！");
+					getch();
+					goto loop;
 				}
-				gotoxy(80, 25); printf("按任意键返回主界面！");
-				getch();
-				goto loop;
+				else if (h == 'n' || h == 'N')
+				{
+					system("cls");
+					gotoxy(85, 21); printf("修改未保存！");
+					gotoxy(80, 23); printf("按任意键返回主界面！");
+					getch();
+					goto loop;
+				}
+				else
+				{
+					goto loop3;
+				}
 			}
-			else if (h == 'n' || h == 'N')
+			else if (c == '2')
 			{
 				system("cls");
-				gotoxy(85, 21); printf("修改未保存！");
-				gotoxy(80, 23); printf("按任意键返回主界面！");
-				getch();
-				goto loop;
-			}
-			else
-			{
-				goto loop3;
-			}
-		}
-		else if (c == '2')
-		{
-			system("cls");
-			if (FileRead(head) == -1)
-			{
-				system("cls");
-				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
-			}
-			else
-			{
 				FileRead(head);
 				DelBook(head);
+				gotoxy(80, 24); printf("按任意键返回主界面！");
+				getch();
+				goto loop;
 			}
+			else if (c == '3')
+			{
+				goto loop;
+			}
+			else
+			{
+				goto loop1;
+			}
+		}
+		else
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
 			gotoxy(80, 25); printf("按任意键返回主界面！");
 			getch();
 			goto loop;
 		}
-		else if (c == '3')
-		{
-			goto loop;
-		}
-		else
-		{
-			goto loop1;
-		}
 	}
 	else if (ch == '4')
 	{
-		if (FileRead(head) == -1)
+		if (FRN() == 0)
 		{
-			system("cls");
-			gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
+			Change();
 		}
 		else
 		{
-			Change();
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
 		}
 		gotoxy(80, 25); printf("按任意键返回主界面！");
 		getch();
@@ -154,57 +146,51 @@ int main(void)
 	}
 	else if (ch == '5')
 	{
-		char c;
-		loop5:
-		PXJM();
-		c = getch();
-		if (c == '1')
+		if (FRN() == 0)
 		{
-			if (FileRead(head) == -1)
-			{
-				system("cls");
-				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
-			}
-			else
+			char c;
+		loop5:
+			PXJM();
+			c = getch();
+			if (c == '1')
 			{
 				FileRead(head);
 				PX_b(head);
 				output(head);
-			}
 				gotoxy(80, 25); printf("按任意键返回主界面！");
 				getch();
 				goto loop;
-			
-		}
-		else if (c == '2')
-		{
-			if (FileRead(head) == -1)
-			{
-				system("cls");
-				gotoxy(80, 23); printf("还没有录入图书信息呢，请先录入图书信息！");
 			}
-			else
+			else if (c == '2')
 			{
 				FileRead(head);
 				PX_p(head);
 				output(head);
+				gotoxy(80, 25); printf("按任意键返回主界面！");
+				getch();
+				goto loop;
 			}
+			else if (c == '3')
+			{
+				goto loop;
+			}
+			else
+			{
+				goto loop5;
+			}
+		}
+		else
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
 			gotoxy(80, 25); printf("按任意键返回主界面！");
 			getch();
 			goto loop;
 		}
-		else if (c == '3')
-		{
-			goto loop;
-		}
-		else
-		{
-			goto loop5;
-		}
 	}
 	else if (ch == '6')
 	{
-		return 0;
+		exit(0);
 	}
 	else
 	{
@@ -212,7 +198,18 @@ int main(void)
 	}
 	return 0;
 }
-
+int FRN()
+{
+	FILE *fp;
+	if (fp = fopen("bookinformation.txt", "rt") == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 
 
@@ -304,6 +301,7 @@ void PXJM()
 
 void CL()//创建链表
 {
+	head->next = NULL;
 	p = (struct BOOK*)malloc(sizeof(struct BOOK));
 	p->next = NULL;
 loop:
@@ -390,38 +388,31 @@ void FileSave()
 	}
 }
 
-int FileRead(struct BOOK* HEAD)
+void FileRead(struct BOOK* HEAD)
 {
 	FILE *fp = fopen("bookinformation.txt", "rt");
-	if (fp = fopen("bookinformation.txt", "rt") == NULL)
+	if (fp == NULL)
 	{
-		return -1;
+		printf("文件打开失败！\n");
+		return 0;
 	}
-	else
+	struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
+	p->next = NULL;
+	while (!feof(fp))//判断是否读到文件尾
 	{
-		if (fp == NULL)
+		struct BOOK* s = (struct BOOK*)malloc(sizeof(struct BOOK));
+		fscanf(fp, "%s %s %s %s %s %s %f\n", s->bianhao, s->bookname, s->writer, s->leibie, s->chubanfang, s->data, &s->price);
+		if (HEAD->next == NULL)
 		{
-			printf("文件打开失败！\n");
-			return 0;
+			HEAD->next = s;
+			s->next = NULL;
 		}
-		struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
-		p->next = NULL;
-		while (!feof(fp))//判断是否读到文件尾
+		else
 		{
-			struct BOOK* s = (struct BOOK*)malloc(sizeof(struct BOOK));
-			fscanf(fp, "%s %s %s %s %s %s %f\n", s->bianhao, s->bookname, s->writer, s->leibie, s->chubanfang, s->data, &s->price);
-			if (HEAD->next == NULL)
-			{
-				HEAD->next = s;
-				s->next = NULL;
-			}
-			else
-			{
-				p->next = s;
-				s->next = NULL;
-			}
-			p = s;
+			p->next = s;
+			s->next = NULL;
 		}
+		p = s;
 	}
 }
 
@@ -438,12 +429,12 @@ void DelRe(struct BOOK* HEAD)
 	{
 		q = HEAD->next;
 	}
-	while (q->next->next!= NULL)
+	while (q->next->next != NULL)
 	{
 		a++;
 		q1 = q;
 		q2 = q1;
-		while (q1->next!=NULL)
+		while (q1->next != NULL)
 		{
 			q2 = q1->next;
 			if (q2->next != NULL&&strcmp(q2->bianhao, q->bianhao) == 0)
@@ -496,7 +487,7 @@ void DelBook(struct BOOK* HEAD)
 	{
 		a++;
 		q2 = q1->next;
-		if (q2->next!=NULL && (strcmp(ch, q2->bianhao) == 0 || strcmp(ch, q2->bookname) == 0))
+		if (q2->next != NULL && (strcmp(ch, q2->bianhao) == 0 || strcmp(ch, q2->bookname) == 0))
 		{
 			t++;
 			a--;
@@ -553,7 +544,7 @@ void PX_b(struct BOOK* HEAD)
 	q2->next = NULL;
 	if (HEAD->next->next != NULL)
 	{
-		for (int i=0;i<a-1;i++)
+		for (int i = 0; i<a - 1; i++)
 		{
 			q = HEAD;
 			q1 = q->next;
@@ -655,64 +646,6 @@ void PX_p(struct BOOK* HEAD)
 	fclose(fp);
 }
 
-/*void PX_n(struct BOOK* HEAD)
-{
-	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
-	q = HEAD;
-	int a = 0;//链表长度计数器
-	while (q->next != NULL)
-	{
-		a++;
-		q = q->next;
-	}
-	struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
-	q1->next = NULL;
-	struct BOOK* q2 = (struct BOOK*)malloc(sizeof(struct BOOK));
-	q2->next = NULL;
-	if (HEAD->next->next != NULL)
-	{
-		for (int i = 0; i<a - 1; i++)
-		{
-			q = HEAD;
-			q1 = q->next;
-			q2 = q1->next;
-			while (q2->next != NULL)
-			{
-				if (strcmp(q1->bookname, q2->bookname) > 0)
-				{
-					q->next = q1->next;
-					q1->next = q2->next;
-					q2->next = q1;
-					q2 = q1->next;
-					q = q->next;
-					continue;
-				}
-				q = q->next;
-				q1 = q1->next;
-				q2 = q2->next;
-			}
-			if (strcmp(q1->bookname, q2->bookname) > 0)
-			{
-				q->next = q2;
-				q2->next = q1;
-				q1->next = NULL;
-			}
-		}
-	}
-	q1 = HEAD->next;
-	FILE* fp = fopen("bookinformation.txt", "wt");
-	if (fp == NULL)
-	{
-		printf("打开文件失败！\n");
-		return 0;
-	}
-	for (int i = 0; i < a; i++)
-	{
-		fprintf(fp, "%s %s %s %s %s %s %g\n", q1->bianhao, q1->bookname, q1->writer, q1->leibie, q1->chubanfang, q1->data, q1->price);
-		q1 = q1->next;
-	}
-	fclose(fp);
-}*/
 
 void Change()
 {
@@ -749,7 +682,7 @@ void Change()
 			scanf("%f", &s->price);
 			char a;
 			Save();
-			loop:a = getch();
+		loop:a = getch();
 			if (a == 'y' || a == 'Y')
 			{
 				Succeed();
