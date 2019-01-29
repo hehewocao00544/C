@@ -41,165 +41,7 @@ void menu3();//选项3复菜单
 //主函数：
 
 int main(void)
-{
-/*loop:
-	head = (struct BOOK*)malloc(sizeof(struct BOOK));
-	head->next = NULL;
-	JM();
-	if (ch == '1')
-	{
-		CL();
-		system("cls");
-		gotoxy(80, 11); printf("按任意键返回主界面！");
-		getch();
-		goto loop; 
-	}
-	else if (ch == '2')
-	{
-		if (FRN() == 0)
-		{
-			Check();
-		}
-		else
-		{
-			system("cls");
-			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
-		}
-		gotoxy(80, 25); printf("按任意键返回主界面！");
-		getch();
-		goto loop;
-	}
-	else if (ch == '3')
-	{
-		if (FRN() == 0)
-		{
-		loop1:
-			DelJM();
-			if (c == '1')
-			{
-			loop3:
-				Del();
-				h = getch();
-				if (h == 'y' || h == 'Y')
-				{
-					FileRead(head);
-					DelRe(head);
-					Succeed();
-					Sleep(1000);
-					system("cls");
-					gotoxy(80, 23); printf("按任意键返回主界面！");
-					getch();
-					goto loop;
-				}
-				else if (h == 'n' || h == 'N')
-				{
-					system("cls");
-					gotoxy(85, 21); printf("修改未保存！");
-					gotoxy(80, 23); printf("按任意键返回主界面！");
-					getch();
-					goto loop;
-				}
-				else
-				{
-					goto loop3;
-				}
-			}
-			else if (c == '2')
-			{
-				system("cls");
-				FileRead(head);
-				DelBook(head);
-				gotoxy(80, 24); printf("按任意键返回主界面！");
-				getch();
-				goto loop;
-			}
-			else if (c == '3')
-			{
-				goto loop;
-			}
-			else
-			{
-				goto loop1;
-			}
-		}
-		else
-		{
-			system("cls");
-			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
-			gotoxy(80, 25); printf("按任意键返回主界面！");
-			getch();
-			goto loop;
-		}
-	}
-	else if (ch == '4')
-	{
-		if (FRN() == 0)
-		{
-			Change();
-		}
-		else
-		{
-			system("cls");
-			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
-		}
-		gotoxy(80, 25); printf("按任意键返回主界面！");
-		getch();
-		goto loop;
-	}
-	else if (ch == '5')
-	{
-		if (FRN() == 0)
-		{
-			char c;
-		loop5:
-			PXJM();
-			c = getch();
-			if (c == '1')
-			{
-				FileRead(head);
-				PX_b(head);
-				output(head);
-				gotoxy(80, 25); printf("按任意键返回主界面！");
-				getch();
-				goto loop;
-			}
-			else if (c == '2')
-			{
-				FileRead(head);
-				PX_p(head);
-				output(head);
-				gotoxy(80, 25); printf("按任意键返回主界面！");
-				getch();
-				goto loop;
-			}
-			else if (c == '3')
-			{
-				goto loop;
-			}
-			else
-			{
-				goto loop5;
-			}
-		}
-		else
-		{
-			system("cls");
-			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
-			gotoxy(80, 25); printf("按任意键返回主界面！");
-			getch();
-			goto loop;
-		}
-	}
-	else if (ch == '6')
-	{
-		exit(0);
-	}
-	else
-	{
-		goto loop;
-	}
-	return 0;*/
-	
+{	
 	menu();
 	return 0;
 }
@@ -734,25 +576,25 @@ void Check()
 	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
 	q = head;
 	char ch[50];
-	gotoxy(80, 15); printf("请输入需要查询图书的编号或书名：");
+	gotoxy(80, 15); printf("请输入需要查询图书的编号或书名或作者：");
 	gotoxy(80, 17); scanf("%s", ch);
+	system("cls");
 	int t = 0;
 	while (q->next != NULL)
 	{
-		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0)
+		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0 || strcmp(ch, q->next->writer) == 0)
 		{
-			t++;
-			system("cls");
 			gotoxy(33, 6); printf("-----------------------------------------------------------------------------------------------------------------\n");
 			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格\n");
 			gotoxy(33, 8); printf("-----------------------------------------------------------------------------------------------------------------\n");
-			gotoxy(40, 9); printf("%s", q->next->bianhao);
-			gotoxy(55, 9); printf("%s", q->next->bookname);
-			gotoxy(69, 9); printf("%s", q->next->writer);
-			gotoxy(82, 9); printf("%s", q->next->leibie);
-			gotoxy(99, 9); printf("%s", q->next->chubanfang);
-			gotoxy(114, 9); printf("%s", q->next->data);
-			gotoxy(131, 9); printf("%g\n", q->next->price);
+			gotoxy(40, 9 + t); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 + t); printf("%s", q->next->bookname);
+			gotoxy(69, 9 + t); printf("%s", q->next->writer);
+			gotoxy(82, 9 + t); printf("%s", q->next->leibie);
+			gotoxy(99, 9 + t); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 + t); printf("%s", q->next->data);
+			gotoxy(131, 9 + t); printf("%g\n", q->next->price);
+			t += 2;
 		}
 		q = q->next;
 	}
