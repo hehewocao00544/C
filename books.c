@@ -32,15 +32,17 @@ void DelRe(struct BOOK* HEAD);//删除重复
 void DelBook(struct BOOK* HEAD);//删除图书（编号或书名）
 void PX_b(struct BOOK* HEAD);//编号排序
 void PX_p(struct BOOK* HEAD);//价格排序
-//void PX_n(struct BOOK* HEAD);//书名排序
 void Check();//图书查询
 void Change();//图书信息修改
 int FRN();//判断是否文件为空
+void menu();//主菜单
+void menu5();//选项5复菜单
+void menu3();//选项3复菜单
 //主函数：
 
 int main(void)
 {
-loop:
+/*loop:
 	head = (struct BOOK*)malloc(sizeof(struct BOOK));
 	head->next = NULL;
 	JM();
@@ -50,7 +52,7 @@ loop:
 		system("cls");
 		gotoxy(80, 11); printf("按任意键返回主界面！");
 		getch();
-		goto loop;
+		goto loop; 
 	}
 	else if (ch == '2')
 	{
@@ -196,20 +198,12 @@ loop:
 	{
 		goto loop;
 	}
+	return 0;*/
+	
+	menu();
 	return 0;
 }
-int FRN()
-{
-	FILE *fp;
-	if (fp = fopen("bookinformation.txt", "rt") == NULL)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
-}
+
 
 
 
@@ -232,8 +226,6 @@ void JM()
 	gotoxy(80, 21); printf("     |  5.图书信息总览  |");
 	gotoxy(80, 23); printf("     |  6.退出程序      |");
 	gotoxy(86, 25); printf("输入序号，选择功能");
-	ch = getch();
-	system("cls");
 }
 
 void Next()
@@ -250,7 +242,7 @@ void Continue()
 	gotoxy(75, 26); printf("|                y / n                 |\n");
 	gotoxy(75, 28); printf("|                                      |\n");
 	gotoxy(75, 30); printf("----------------------------------------\n");
-	gotoxy(75, 32);	printf("                输入y保存！");
+	gotoxy(75, 32);	printf("      输入y继续录入信息，输入n结束录入！");
 }
 
 void Save()
@@ -285,7 +277,7 @@ void DelJM()
 	gotoxy(80, 15); printf("     |  2.编号或书名删除  |");
 	gotoxy(80, 17); printf("     |  3.返回系统主界面  |");
 	gotoxy(86, 25); printf(" 输入序号，选择功能");
-	c = getch();
+	//c = getch();
 }
 
 void PXJM()
@@ -777,4 +769,178 @@ void Succeed()
 	gotoxy(80, 20); printf("---------------------------\n");
 	gotoxy(80, 22); printf("|          成 功 !         |\n");
 	gotoxy(80, 24); printf("---------------------------\n");
+}
+
+int FRN()
+{
+	FILE *fp;
+	if (fp = fopen("bookinformation.txt", "rt") == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+void menu()
+{
+	head = (struct BOOK*)malloc(sizeof(struct BOOK));
+	head->next = NULL;
+	system("cls");
+	char str;
+	JM();
+	str = getch();
+	switch (str)
+	{
+	case '1':
+		CL();
+		system("cls");
+		gotoxy(80, 11); printf("按任意键返回主界面！");
+		getch(); 
+		menu();
+		break;
+	case '2':
+		if (FRN() == 0)
+		{
+			Check();
+		} 
+		else
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
+		}
+		gotoxy(80, 25); printf("按任意键返回主界面！");
+		getch();
+		menu();
+		break;
+	case '3':
+		menu3();
+		break;
+	case '4':
+		if (FRN() == 0)
+		{
+			Change();
+		}
+		else
+		{
+			system("cls");
+			gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
+		}
+		gotoxy(80, 25); printf("按任意键返回主界面！");
+		getch();
+		menu();
+		break;
+	case '5':
+		menu5();
+		break;
+	case '6':system("cls"); exit(0); break;
+	default: menu();
+	}
+}
+
+void menu5()
+{
+	system("cls");
+	if (FRN() == 0)
+	{
+		PXJM();
+		char c;
+		c = getch();
+		switch (c)
+		{
+		case '1':
+			FileRead(head);
+			PX_b(head);
+			output(head);
+			gotoxy(80, 25); printf("按任意键返回浏览界面！");
+			getch();
+			menu5();
+			break;
+		case '2':
+			FileRead(head);
+			PX_p(head);
+			output(head);
+			gotoxy(80, 25);  printf("按任意键返回浏览界面！");
+			getch();
+			menu5();
+			break;
+		case '3':
+			menu();
+			break;
+		default:menu5();
+		}
+	}
+	else
+	{
+		system("cls");
+		gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
+		gotoxy(80, 25); printf("按任意键返回主界面！");
+		getch();
+		menu();
+	}
+}
+
+void menu3()
+{
+	system("cls");
+	if (FRN() == 0)
+	{
+		DelJM();
+		char c;
+		c = getch();
+		switch (c)
+		{
+		case '1':
+			Del();
+		loop1:
+			h = getch();
+			if (h == 'y' || h == 'Y')
+			{
+				FileRead(head);
+				DelRe(head);
+				Succeed();
+				Sleep(1000);
+				system("cls");
+				gotoxy(80, 23); printf("按任意键返回删除菜单！");
+				getch();
+				menu3();
+			}
+			else if (h == 'n' || h == 'N')
+			{
+				system("cls");
+				gotoxy(85, 21); printf("修改未保存！");
+				gotoxy(80, 23); printf("按任意键返回删除菜单！");
+				getch();
+				menu3();
+			}
+			else
+			{
+				goto loop1;
+			}
+			break;
+		case '2':
+			system("cls");
+			FileRead(head);
+			DelBook(head);
+			gotoxy(80, 24); printf("按任意键返回删除菜单！");
+			getch();
+			menu3();
+			break;
+		case '3':
+			menu();
+			break;
+		default:menu3();
+		}
+	}
+	else
+	{
+		system("cls");
+		gotoxy(80, 23); printf("还没添加一本图书信息呢，先去添加一本吧！");
+		gotoxy(80, 25); printf("按任意键返回主界面！");
+		getch();
+		menu();
+	}
 }
