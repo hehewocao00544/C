@@ -5,15 +5,15 @@
 char ch, c, h;//选择
 struct BOOK
 {
-	char bianhao[11];
-	char bookname[50];
-	char writer[50];
-	char leibie[20];
-	char chubanfang[50];
-	char data[11];
-	float price;
+	char bianhao[11];//图书编号
+	char bookname[50];//书名
+	char writer[50];//作者
+	char leibie[20];//图书类型
+	char chubanfang[50];//出版方
+	char data[11];//出版日期
+	float price;//价格
+	int num;//数量
 	struct BOOK* next;
-	int num;
 };
 struct BOOK* head;
 struct BOOK* p;
@@ -29,7 +29,7 @@ void Succeed();//成功
 void FileSave();//文件保存
 void PXJM();//排序界面
 void FileRead(struct BOOK* HEAD);//文件读取
-void DelRe(struct BOOK* HEAD);//删除重复
+void DelWriter(struct BOOK* HEAD);//删除作者
 void DelBook(struct BOOK* HEAD);//删除图书（编号或书名）
 void PX_b(struct BOOK* HEAD);//编号排序
 void PX_p(struct BOOK* HEAD);//价格排序
@@ -62,6 +62,7 @@ void gotoxy(int x, int y)
 void JM()
 {
 	system("cls");
+	printf("*请最大化使用*");
 	gotoxy(80, 11); printf("*********图书管理系统*********");
 	gotoxy(80, 13); printf("     |  1.图书信息录入  |");
 	gotoxy(80, 15); printf("     |  2.图书信息查询  |");
@@ -117,7 +118,7 @@ void DelJM()
 {
 	system("cls");
 	gotoxy(80, 11); printf("*********图书管理系统*********");
-	gotoxy(80, 13); printf("     |  1.删除其重复信息  |");
+	gotoxy(80, 13); printf("     |  1.删除某作者图书  |");
 	gotoxy(80, 15); printf("     |  2.编号或书名删除  |");
 	gotoxy(80, 17); printf("     |  3.返回系统主界面  |");
 	gotoxy(86, 25); printf(" 输入序号，选择功能");
@@ -151,8 +152,6 @@ loop:
 			gotoxy(80, 11); printf("输入的编号重复！请重新输入编号：");
 			goto loop1;
 		}
-		else if (ReCheck(s->bianhao)==0)
-		{
 			gotoxy(80, 13); printf("请输入书名（小于25字）：");
 			scanf("%s", s->bookname);
 			gotoxy(80, 15); printf("请输入作者姓名（小于25字）：");
@@ -180,9 +179,26 @@ loop:
 			p = s;
 			//文件存储
 			Save();
-			FileSave();
-			Succeed();
-			Sleep(1000);
+			char a;
+			loop2:
+			a = getch();
+			if (a == 'y' || a == 'Y')
+			{
+				FileSave();
+				Succeed();
+				Sleep(1000);
+			}
+			else if (a == 'n' || a == 'N')
+			{
+				system("cls");
+				gotoxy(90, 25); printf("修改未保存！");
+				Sleep(1000);
+				system("cls");
+			}
+			else
+			{
+				goto loop2;
+			}
 			gotoxy(80, 25); Continue();
 			ch = getch();
 			if (ch == 'y' || ch == 'Y')
@@ -191,7 +207,7 @@ loop:
 				goto loop;
 			}
 		}
-	}
+	
 }
 
 void output(struct BOOK* s)
@@ -264,59 +280,82 @@ void FileRead(struct BOOK* HEAD)
 	}
 }
 
-void DelRe(struct BOOK* HEAD)
+void DelWriter(struct BOOK* HEAD)
 {
-	int a = 1;//删除后链表长度计数器
-	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
-	q->next = NULL;
+	int t = 0;
+	int a = 0;//删除后链表长度计数器
+	char ch[50];
 	struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
 	q1->next = NULL;
 	struct BOOK* q2 = (struct BOOK*)malloc(sizeof(struct BOOK));
 	q2->next = NULL;
-	if (HEAD->next != NULL)
-	{
-		q = HEAD->next;
-	}
-	while (q->next->next != NULL)
+	q1 = HEAD;
+	gotoxy(75, 20); printf("请输入要删除的图书的作者：");
+	scanf("%s", ch);
+	while (q1->next != NULL)
 	{
 		a++;
-		q1 = q;
-		q2 = q1;
-		while (q1->next != NULL)
+		q2 = q1->next;
+		if (q2->next != NULL && (strcmp(ch, q2->writer) == 0 ))
 		{
-			q2 = q1->next;
-			if (q2->next != NULL&&strcmp(q2->bianhao, q->bianhao) == 0)
-			{
-				q1->next = q2->next;
-				q2 = q2->next;
-				continue;
-			}
-			else if (q2->next == NULL&&strcmp(q2->bianhao, q->bianhao) == 0)
-			{
-				q1->next = NULL;
-				break;
-			}
-			q1 = q1->next;
+			t++;
+			a--;
+			q1->next = q2->next;
+			q2 = q2->next;
+			continue;
 		}
-		q = q->next;
+		else if (q2->next == NULL && (strcmp(ch, q2->writer)==0))
+		{
+			t++;
+			a--;
+			q1->next = NULL;
+			break;
+		}
+		q1 = q1->next;
 	}
-	if (strcmp(q2->bianhao, q->bianhao) == 0)
+	if (t != 0)
 	{
-		q->next = NULL;
+		loop:
+		Del();
+		char c;
+		c = getch();
+		if (c == 'y' || c == 'Y')
+		{
+			q1 = HEAD->next;
+			FILE* fp = fopen("bookinformation.txt", "wt");
+			if (fp == NULL)
+			{
+				printf("打开文件失败！\n");
+				return 0;
+			}
+			for (int i = 0; i < a; i++)
+			{
+				fprintf(fp, "%s %s %s %s %s %s %g %d\n", q1->bianhao, q1->bookname, q1->writer, q1->leibie, q1->chubanfang, q1->data, q1->price, q1->num);
+				q1 = q1->next;
+			}
+			fclose(fp);
+			Succeed();
+			Sleep(1000);
+			system("cls");
+		}
+		else if (c == 'n' || c == 'N')
+		{
+			system("cls");
+			gotoxy(83, 22); printf("修改未保存！");
+			gotoxy(83, 25); printf("按任意键返回删除菜单！");
+			getch();
+			menu3();
+		}
+		else
+		{
+			goto loop;
+		}
 	}
-	q = HEAD->next;
-	FILE* fp = fopen("bookinformation.txt", "wt");
-	if (fp == NULL)
+	else if (t==0)
 	{
-		printf("打开文件失败！\n");
-		return 0;
+		gotoxy(80, 22); printf("没有找到此作者！！！");
+		Sleep(1000);
 	}
-	for (int i = 0; i < a; i++)
-	{
-		fprintf(fp, "%s %s %s %s %s %s %g %d\n", q->bianhao, q->bookname, q->writer, q->leibie, q->chubanfang, q->data, q->price, q->num);
-		q = q->next;
-	}
-	fclose(fp);
 }
 
 void DelBook(struct BOOK* HEAD)
@@ -354,22 +393,41 @@ void DelBook(struct BOOK* HEAD)
 	}
 	if (t != 0)
 	{
-		q1 = HEAD->next;
-		FILE* fp = fopen("bookinformation.txt", "wt");
-		if (fp == NULL)
+		loop:
+		Del();
+		char c;
+		c = getch();
+		if (c == 'y' || c == 'Y')
 		{
-			printf("打开文件失败！\n");
-			return 0;
+			q1 = HEAD->next;
+			FILE* fp = fopen("bookinformation.txt", "wt");
+			if (fp == NULL)
+			{
+				printf("打开文件失败！\n");
+				return 0;
+			}
+			for (int i = 0; i < a; i++)
+			{
+				fprintf(fp, "%s %s %s %s %s %s %g %d\n", q1->bianhao, q1->bookname, q1->writer, q1->leibie, q1->chubanfang, q1->data, q1->price, q1->num);
+				q1 = q1->next;
+			}
+			fclose(fp);
+			Succeed();
+			Sleep(1000);
+			system("cls");
 		}
-		for (int i = 0; i < a; i++)
+		else if (c == 'n' || c == 'N')
 		{
-			fprintf(fp, "%s %s %s %s %s %s %g %d\n", q1->bianhao, q1->bookname, q1->writer, q1->leibie, q1->chubanfang, q1->data, q1->price,q1->num);
-			q1 = q1->next;
+			system("cls");
+			gotoxy(83, 22); printf("修改未保存！");
+			gotoxy(83, 25); printf("按任意键返回删除菜单！");
+			getch();
+			menu3();
 		}
-		fclose(fp);
-		Succeed();
-		Sleep(1000);
-		system("cls");
+		else
+		{
+			goto loop;
+		}
 	}
 	else
 	{
@@ -659,7 +717,7 @@ void menu()
 		system("cls");
 		CL();
 		system("cls");
-		gotoxy(80, 11); printf("按任意键返回主界面！");
+		gotoxy(80, 25); printf("按任意键返回主界面！");
 		getch(); 
 		menu();
 		break;
@@ -755,32 +813,13 @@ void menu3()
 		switch (c)
 		{
 		case '1':
-			Del();
-		loop1:
-			h = getch();
-			if (h == 'y' || h == 'Y')
-			{
-				FileRead(head);
-				DelRe(head);
-				Succeed();
-				Sleep(1000);
-				system("cls");
-				gotoxy(80, 23); printf("按任意键返回删除菜单！");
-				getch();
-				menu3();
-			}
-			else if (h == 'n' || h == 'N')
-			{
-				system("cls");
-				gotoxy(85, 21); printf("修改未保存！");
-				gotoxy(80, 23); printf("按任意键返回删除菜单！");
-				getch();
-				menu3();
-			}
-			else
-			{
-				goto loop1;
-			}
+			system("cls");
+			FileRead(head);
+			DelWriter(head);
+			system("cls");
+			gotoxy(80, 23); printf("按任意键返回删除菜单！");
+			getch();
+			menu3();
 			break;
 		case '2':
 			system("cls");
