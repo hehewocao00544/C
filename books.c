@@ -15,6 +15,13 @@ struct BOOK
 	int num;//数量
 	struct BOOK* next;
 };
+struct admin
+{
+	char adname[20];
+	char mima[20];
+	char phone[12];
+	struct admin * next;
+};
 struct BOOK* head;
 struct BOOK* p;
 void gotoxy(int x, int y);//光标移动
@@ -40,11 +47,24 @@ void menu();//主菜单
 void menu5();//选项5复菜单
 void menu3();//选项3复菜单
 int ReCheck(char str[]);//判断输入编号是否重复
+void FileReadAdmin(struct admin*head);//用户信息读取
+void loginJM();//登陆界面
+void registerJM();//注册界面
+void SaveAdmin(struct admin* s);//保存用户信息
+void menulog();//注册和登陆菜单
+void registermenu(); //注册功能
+void loginmenu();//登陆功能
+void menulogJM();//注册和登陆菜单选择界面
+struct admin* CreatAdmin();//创建保存一个用户
+void LookAdmin();//查看所有用户
+void welcome();//欢迎使用
+void FileSaveCheck(struct admin*s);//用户注册重复检查
+
 //主函数：
 
 int main(void)
 {	
-	menu();
+	menulog();
 	return 0;
 }
 
@@ -70,7 +90,8 @@ void JM()
 	gotoxy(80, 19); printf("     |  4.图书信息修改  |");
 	gotoxy(80, 21); printf("     |  5.图书信息总览  |");
 	gotoxy(80, 23); printf("     |  6.退出程序      |");
-	gotoxy(86, 25); printf("输入序号，选择功能");
+	gotoxy(80, 25); printf("     |  7.注销用户      |");
+	gotoxy(86, 27); printf("输入序号，选择功能");
 }
 
 void Next()
@@ -756,6 +777,7 @@ void menu()
 		menu5();
 		break;
 	case '6':system("cls"); exit(0); break;
+	case '7':menulog(); Succeed(); Sleep(1000); break;
 	default: menu();
 	}
 }
@@ -867,5 +889,213 @@ int ReCheck(char str[])
 	else
 	{
 		return 0;
+	}
+}
+int FileReadNULL()
+{
+	FILE *fp;
+	if (fp = fopen("Admin.data", "rb") == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+void loginJM()
+{
+	system("cls");
+	gotoxy(80, 16); printf("**********图书管理系统登录**********\n");
+	gotoxy(80, 17); printf("*                                  *\n");
+	gotoxy(80, 18); printf("*   帐号：                         *\n");
+	gotoxy(80, 19); printf("*                                  *\n");
+	gotoxy(80, 20); printf("*   密码：                         *\n");
+	gotoxy(80, 21); printf("*                                  *\n");
+	gotoxy(80, 22); printf("************************************\n");
+}
+
+void registerJM()
+{
+	system("cls");
+	gotoxy(80,16); printf("**********图书管理系统注册**********\n");
+	gotoxy(80, 17); printf(" *                                *\n");
+	gotoxy(80, 18); printf(" *   帐号：                       *\n");
+	gotoxy(80, 19); printf(" *                                *\n");
+	gotoxy(80, 20); printf(" *   密码：                       *\n");
+	gotoxy(80, 21); printf(" *                                *\n");
+	gotoxy(80, 22); printf(" *   手机号：                     *\n");
+	gotoxy(80, 23); printf(" *                                *\n");
+	gotoxy(80, 24); printf(" *------------再次输入------------*\n");
+	gotoxy(80, 25); printf(" *                                *\n");
+	gotoxy(80, 26); printf(" *   帐号：                       *\n");
+	gotoxy(80, 27); printf(" *                                *\n");
+	gotoxy(80, 28); printf(" *   密码：                       *\n");
+	gotoxy(80, 29); printf(" *                                *\n");
+	gotoxy(80, 30); printf(" *   手机号：                     *\n");
+	gotoxy(80, 31); printf(" *                                *\n");
+	gotoxy(80, 32); printf("************************************\n");
+}
+
+
+struct admin* CreatAdmin()
+{
+	struct admin* p = (struct admin*)malloc(sizeof(struct admin));
+	
+loop:
+	{
+		registerJM();
+		struct admin* s = (struct admin*)malloc(sizeof(struct admin));
+		gotoxy(92, 18); scanf("%s", &s->adname);
+		gotoxy(92, 20); scanf("%s", &s->mima);
+		gotoxy(93, 22); scanf("%s", &s->phone);
+
+		struct admin* s2 = (struct admin*)malloc(sizeof(struct admin));
+		gotoxy(92, 26); scanf("%s", &s2->adname);
+		gotoxy(92, 28); scanf("%s", &s2->mima);
+		gotoxy(93, 30); scanf("%s", &s2->phone);
+
+		if (strcmp(s->adname, s2->adname) == 0 && strcmp(s->mima, s2->mima) == 0 && strcmp(s->phone, s2->phone) == 0)
+		{
+			FileSaveCheck(s);
+			return s;
+		}
+		else
+		{
+			system("cls");
+			gotoxy(90, 19); printf("两次输入不一致，请重新输入！\n"); Sleep(1000);
+			goto loop;
+		}
+	}
+}
+void SaveAdmin(struct admin* s)
+{
+	FILE *fp = NULL;
+	fp = fopen("Admin.data", "ab");
+	if (fp == NULL)
+	{
+		printf("打开文件失败！\n");
+		return;
+	}
+	fprintf(fp, "%s\t%s\t%s\n", s->adname, s->mima, s->phone);
+	fclose(fp);
+	Succeed();
+	Sleep(1000);
+}
+
+void loginmenu()
+{
+	if (FileReadNULL() == -1)
+	{
+		system("cls");
+		gotoxy(80, 13); printf("还没注册管理员账号呢，先去注册一个吧！"); Sleep(1000);
+		registermenu();
+	}
+	loginJM();
+	struct admin* q = (struct admin*)malloc(sizeof(struct admin));
+	gotoxy(92, 18); scanf("%s", &q->adname);
+	gotoxy(92, 20); scanf("%s", &q->mima);
+	struct admin* p = (struct admin*)malloc(sizeof(struct admin));
+	struct admin* head = (struct BOOK*)malloc(sizeof(struct BOOK));
+	head->next = NULL;
+	FileReadAdmin(head);
+	p = head;
+	while (p->next != NULL)
+	{
+		if (strcmp(p->next->adname, q->adname) == 0 && strcmp(p->next->mima, q->mima) == 0)
+		{
+			welcome();
+			Sleep(1000);
+			menu();
+		}
+		else
+		{
+			gotoxy(92, 19); printf("账号或密码错误！"); Sleep(1000); menulog();
+		}
+		p = p->next;
+	}
+}
+void FileReadAdmin(struct admin*head)
+{
+	FILE *fp = fopen("Admin.data", "rb");
+	if (fp == NULL)
+	{
+		printf("打开文件失败！\n");
+		return;
+	}
+	struct admin* p = (struct admin*)malloc(sizeof(struct admin));
+	int i = 0;
+	while (!feof(fp))
+	{
+		struct admin* s = (struct admin*)malloc(sizeof(struct admin));
+		fscanf(fp, "%s\t%s\t%s\n", &s->adname, &s->mima, &s->phone);
+		if (i == 0)
+		{
+			head->next = s;
+			s->next = NULL;
+		}
+		else
+		{
+			s->next = NULL;
+			p->next = s;
+		}
+		p = s;
+		i++;
+	}
+}
+void menulogJM()
+{
+	system("cls");
+	printf("*请最大化使用*");
+	gotoxy(80, 16); printf("********图书管理系统登陆********");
+	gotoxy(80, 18); printf("     |  1.     注册         |");
+	gotoxy(80, 20); printf("     |  2.     登陆         |");
+	gotoxy(80, 22); printf("     |  3.    退出程序       |");
+	gotoxy(86, 24); printf("输入序号，选择功能");
+}
+void menulog()
+{
+	menulogJM();
+	char ch = getch();
+	switch (ch)
+	{
+	case '1':registermenu(); break;
+	case '2':loginmenu(); break;
+	case '3':system("cls"); exit(0); break;
+	default:menulog(); break;
+	}
+}
+void registermenu()
+{
+	SaveAdmin(CreatAdmin());
+	menulog();
+}
+
+void welcome()
+{
+	system("cls");
+	gotoxy(80, 18); printf("******************************\n");
+	gotoxy(80, 20); printf(" |         登陆成功          |\n");
+	gotoxy(80, 22); printf(" |        o(*￣▽￣*)o       |\n");
+	gotoxy(80, 24); printf(" |         欢迎使用          |\n");
+	gotoxy(80, 26); printf("******************************\n");
+}
+
+void FileSaveCheck(struct admin*s)
+{
+	struct admin*head = (struct admin*)malloc(sizeof(struct admin));
+	struct admin*p = (struct admin*)malloc(sizeof(struct admin));
+	FileReadAdmin(head);
+	p = head;
+	while (p->next != NULL)
+	{
+		if (strcmp(s->adname,p->next->adname)==0)
+		{
+			system("cls");
+			gotoxy(90, 19); printf("该用户名已被注册，请重新注册！\n"); Sleep(1000);
+			registermenu();
+		}
+		p = p->next;
 	}
 }
