@@ -777,7 +777,7 @@ void menu()
 		menu5();
 		break;
 	case '6':system("cls"); exit(0); break;
-	case '7':menulog(); Succeed(); Sleep(1000); break;
+	case '7': Succeed(); Sleep(1000); menulog(); break;
 	default: menu();
 	}
 }
@@ -975,6 +975,7 @@ void SaveAdmin(struct admin* s)
 	fp = fopen("Admin.data", "ab");
 	if (fp == NULL)
 	{
+		
 		printf("打开文件失败！\n");
 		return;
 	}
@@ -1009,11 +1010,11 @@ void loginmenu()
 			Sleep(1000);
 			menu();
 		}
-		else
-		{
-			gotoxy(92, 19); printf("账号或密码错误！"); Sleep(1000); menulog();
-		}
 		p = p->next;
+	}
+	if (p->next == NULL)
+	{
+		gotoxy(92, 19); printf("账号或密码错误！"); Sleep(1000); menulog();
 	}
 }
 void FileReadAdmin(struct admin*head)
@@ -1086,16 +1087,19 @@ void FileSaveCheck(struct admin*s)
 {
 	struct admin*head = (struct admin*)malloc(sizeof(struct admin));
 	struct admin*p = (struct admin*)malloc(sizeof(struct admin));
-	FileReadAdmin(head);
-	p = head;
-	while (p->next != NULL)
+	if (FileReadNULL() == 0)
 	{
-		if (strcmp(s->adname,p->next->adname)==0)
+		FileReadAdmin(head);
+		p = head;
+		while (p->next != NULL)
 		{
-			system("cls");
-			gotoxy(90, 19); printf("该用户名已被注册，请重新注册！\n"); Sleep(1000);
-			registermenu();
+			if (strcmp(s->adname, p->next->adname) == 0)
+			{
+				system("cls");
+				gotoxy(90, 19); printf("该用户名已被注册，请重新注册！\n"); Sleep(1000);
+				registermenu();
+			}
+			p = p->next;
 		}
-		p = p->next;
 	}
 }
