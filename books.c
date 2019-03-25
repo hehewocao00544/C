@@ -56,9 +56,16 @@ void registermenu(); //注册功能
 void loginmenu();//登陆功能
 void menulogJM();//注册和登陆菜单选择界面
 struct admin* CreatAdmin();//创建保存一个用户
-void LookAdmin();//查看所有用户
 void welcome();//欢迎使用
+void output_writer();//输出作者统计结果
+void output_type();//输出类型统计结果
+
+
 void FileSaveCheck(struct admin*s);//用户注册重复检查
+void usermenu();//用户菜单
+void userJM();//用户菜单界面
+void CheckBor();//用户查询借阅功能
+void attention();//注意提示框
 
 //主函数：
 
@@ -125,7 +132,7 @@ void Save()
 
 void Del()
 {
-	system("cls");
+	//system("cls");
 	gotoxy(80, 20); printf("---------------------------\n");
 	gotoxy(80, 22); printf("|                         |\n");
 	gotoxy(80, 24); printf("|    Are you delete it ?    |\n");
@@ -143,7 +150,6 @@ void DelJM()
 	gotoxy(80, 15); printf("     |  2.编号或书名删除  |");
 	gotoxy(80, 17); printf("     |  3.返回系统主界面  |");
 	gotoxy(86, 25); printf(" 输入序号，选择功能");
-	//c = getch();
 }
 
 void PXJM()
@@ -152,8 +158,10 @@ void PXJM()
 	gotoxy(80, 11); printf("*********图书管理系统*********");
 	gotoxy(80, 13); printf("     |  1.按图书编号排序  |");
 	gotoxy(80, 15); printf("     |  2.按图书价格排序  |");
-	gotoxy(80, 17); printf("     |  3.返回系统主界面  |");
-	gotoxy(86, 19); printf(" 输入序号，选择功能");
+	gotoxy(80, 17); printf("     |  3.按作者统计图书  |");
+	gotoxy(80, 19); printf("     |  4.按类型统计图书  |");
+	gotoxy(80, 21); printf("     |  5.返回系统主界面  |");
+	gotoxy(86, 23); printf(" 输入序号，选择功能");
 }
 
 
@@ -313,6 +321,31 @@ void DelWriter(struct BOOK* HEAD)
 	q1 = HEAD;
 	gotoxy(75, 20); printf("请输入要删除的图书的作者：");
 	scanf("%s", ch);
+
+	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
+	q = HEAD;
+	while (q->next != NULL)
+	{
+		if (strcmp(ch, q->next->writer) == 0)
+		{
+			system("cls");
+			gotoxy(33, 6); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格         图书数量\n");
+			gotoxy(33, 8); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 9 + t); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 + t); printf("%s", q->next->bookname);
+			gotoxy(69, 9 + t); printf("%s", q->next->writer);
+			gotoxy(82, 9 + t); printf("%s", q->next->leibie);
+			gotoxy(99, 9 + t); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 + t); printf("%s", q->next->data);
+			gotoxy(131, 9 + t); printf("%g", q->next->price);
+			gotoxy(150, 9 + t); printf("%d\n", q->next->num);
+			t += 2;
+		}
+		q = q->next;
+	}
+
+
 	while (q1->next != NULL)
 	{
 		a++;
@@ -391,6 +424,29 @@ void DelBook(struct BOOK* HEAD)
 	q1 = HEAD;
 	gotoxy(75, 20); printf("请输入要删除的图书的编号或书名：");
 	scanf("%s", ch);
+	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
+	q = HEAD;
+	while (q->next != NULL)
+	{
+		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0 )
+		{
+			system("cls");
+			gotoxy(33, 6); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格         图书数量\n");
+			gotoxy(33, 8); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 9 + t); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 + t); printf("%s", q->next->bookname);
+			gotoxy(69, 9 + t); printf("%s", q->next->writer);
+			gotoxy(82, 9 + t); printf("%s", q->next->leibie);
+			gotoxy(99, 9 + t); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 + t); printf("%s", q->next->data);
+			gotoxy(131, 9 + t); printf("%g", q->next->price);
+			gotoxy(150, 9 + t); printf("%d\n", q->next->num);
+			t += 2;
+		}
+		q = q->next;
+	}
+
 	while (q1->next != NULL)
 	{
 		a++;
@@ -589,10 +645,22 @@ void Change()
 	{
 		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0)
 		{
+			system("cls");
+			gotoxy(33, 6); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格         图书数量\n");
+			gotoxy(33, 8); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 9 ); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 ); printf("%s", q->next->bookname);
+			gotoxy(69, 9 ); printf("%s", q->next->writer);
+			gotoxy(82, 9 ); printf("%s", q->next->leibie);
+			gotoxy(99, 9 ); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 ); printf("%s", q->next->data);
+			gotoxy(131, 9 ); printf("%g", q->next->price);
+			gotoxy(150, 9 ); printf("%d\n", q->next->num);
+
 			t++;
 			struct BOOK* q1 = (struct BOOK*)malloc(sizeof(struct BOOK));
 			q1 = q->next;
-			system("cls");
 			struct BOOK* s = (struct BOOK*)malloc(sizeof(struct BOOK));
 			gotoxy(80, 11); printf("请重新输入图书编号（小于10位）：");
 			scanf("%s", s->bianhao);
@@ -668,6 +736,7 @@ void Change()
 void Check()
 {
 	system("cls");
+	head->next = NULL;
 	FileRead(head);
 	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
 	q = head;
@@ -796,7 +865,7 @@ void menu5()
 			FileRead(head);
 			PX_b(head);
 			output(head);
-			gotoxy(80, 25); printf("按任意键返回浏览界面！");
+			gotoxy(60, 5); printf("按任意键返回浏览界面！");
 			getch();
 			menu5();
 			break;
@@ -804,11 +873,13 @@ void menu5()
 			FileRead(head);
 			PX_p(head);
 			output(head);
-			gotoxy(80, 25);  printf("按任意键返回浏览界面！");
+			gotoxy(60, 5); printf("按任意键返回浏览界面！");
 			getch();
 			menu5();
 			break;
-		case '3':
+		case '3':output_writer(); gotoxy(60, 5); printf("按任意键返回浏览界面！"); getch(); menu5(); break;
+		case '4':output_type(); gotoxy(60, 5); printf("按任意键返回浏览界面！"); getch(); menu5(); break;
+		case '5':
 			menu();
 			break;
 		default:menu5();
@@ -938,6 +1009,150 @@ void registerJM()
 	gotoxy(80, 32); printf("************************************\n");
 }
 
+
+void output_writer()
+{
+	system("cls");
+	gotoxy(75, 9); printf("--------------------------------------------------\n");
+	gotoxy(75, 10); printf("           作者             个人作品数量             \n");
+	gotoxy(75, 11); printf("--------------------------------------------------\n");
+	struct BOOK* head = (struct BOOK*)malloc(sizeof(struct BOOK));
+	struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
+	head->next = NULL;
+	FileRead(head);
+	if (FRN() == -1)
+	{
+		gotoxy(85, 15); printf("还没有添加图书呢，先去添加一本吧！"); Sleep(1000); menu();
+	}
+	p = head->next;
+	int t = 0;//输出次数计数器
+	int sum = 1;//统计数量计数器
+	while (head->next != NULL && head->next->next != NULL)
+	{
+		char ch[50];
+		strcpy(ch, head->next->writer);
+		while (p->next != NULL)
+		{
+			if (strcmp(ch, p->next->writer) == 0)
+			{
+				sum++;
+				if (p->next->next != NULL)
+				{
+					p->next = p->next->next;
+					continue;
+				}
+				else if (p->next->next == NULL)
+				{
+					if (head->next->next->next == NULL&&strcmp(head->next->writer, head->next->next->writer) == 0)
+					{
+						gotoxy(86, 12 + t); printf("%s", head->next->writer);
+						gotoxy(108, 12 + t); printf("%d", sum);
+						head->next = NULL;
+						break;
+					}
+					else
+					{
+						p->next = NULL;
+						continue;
+					}
+				}
+			}
+			p = p->next;
+		}
+		if (head->next != NULL)
+		{
+			gotoxy(86, 12 + t); printf("%s", head->next->writer);
+			gotoxy(108, 12 + t); printf("%d", sum);
+			t += 2;
+			if (head->next->next != NULL)
+			{
+				
+					p = head->next;
+					head->next = p->next;
+					p = head->next;
+				
+			}
+			sum = 1;
+		}
+		if ( head->next != NULL)
+		{
+			gotoxy(86, 12 + t); printf("%s", head->next->writer);
+			gotoxy(108, 12 + t); printf("%d", sum);
+		}
+	}
+}
+
+void output_type()
+{
+	system("cls");
+	gotoxy(75, 9); printf("--------------------------------------------------\n");
+	gotoxy(75, 10); printf("           类型               作品数量             \n");
+	gotoxy(75, 11); printf("--------------------------------------------------\n");
+	struct BOOK* head = (struct BOOK*)malloc(sizeof(struct BOOK));
+	struct BOOK* p = (struct BOOK*)malloc(sizeof(struct BOOK));
+	head->next = NULL;
+	FileRead(head);
+	if (FRN() == -1)
+	{
+		gotoxy(85, 15); printf("还没有添加图书呢，先去添加一本吧！"); Sleep(1000); menu();
+	}
+	p = head->next;
+	int t = 0;//输出次数计数器
+	int sum = 1;//统计数量计数器
+	while (head->next != NULL && head->next->next != NULL)
+	{
+		char ch[50];
+		strcpy(ch, head->next->leibie);
+		while (p->next != NULL)
+		{
+			if (strcmp(ch, p->next->leibie) == 0)
+			{
+				sum++;
+				if (p->next->next != NULL)
+				{
+					p->next = p->next->next;
+					continue;
+				}
+				else if (p->next->next == NULL)
+				{
+					if (head->next->next->next == NULL&&strcmp(head->next->leibie, head->next->next->leibie) == 0)
+					{
+						gotoxy(86, 12 + t); printf("%s", head->next->leibie);
+						gotoxy(108, 12 + t); printf("%d", sum);
+						head->next = NULL;
+						break;
+					}
+					else
+					{
+						p->next = NULL;
+						continue;
+					}
+				}
+			}
+			p = p->next;
+		}
+		if (head->next != NULL)
+		{
+			gotoxy(86, 12 + t); printf("%s", head->next->leibie);
+			gotoxy(108, 12 + t); printf("%d", sum);
+			t += 2;
+			if (head->next->next != NULL)
+			{
+
+				p = head->next;
+				head->next = p->next;
+				p = head->next;
+
+			}
+			sum = 1;
+		}
+		if (head->next != NULL)
+		{
+		gotoxy(86, 12 + t); printf("%s", head->next->leibie);
+		gotoxy(108, 12 + t); printf("%d", sum);
+		}
+	}
+}
 
 struct admin* CreatAdmin()
 {
@@ -1072,7 +1287,7 @@ void registermenu()
 	SaveAdmin(CreatAdmin());
 	menulog();
 }
-
+                                                    
 void welcome()
 {
 	system("cls");
@@ -1103,3 +1318,121 @@ void FileSaveCheck(struct admin*s)
 		}
 	}
 }
+
+/*void userJM()
+{
+	system("cls");
+	printf("*请最大化使用*");
+	gotoxy(80, 11); printf("************图书借阅系统************");
+	gotoxy(80, 13); printf("     |  1.图书信息查询与借阅  |");
+	gotoxy(80, 15); printf("     |  2.图书信息总览       |");
+	gotoxy(80, 17); printf("     |  3.我的借阅信息       |");
+	gotoxy(80, 19); printf("     |  4.退出程序          |");
+	gotoxy(80, 21); printf("     |  5.注销用户          |");
+	gotoxy(80, 23); printf("       输入序号，选择功能");
+}
+
+void usermenu()
+{
+	userJM();
+	char ch = getch();
+	switch (ch)
+	{
+	case '1':CheckBor(); break;
+	case '2':
+	case '3':
+	case '4':exit(0); break;
+	case '5':Succeed(); Sleep(1000); menulog(); break;
+	default:usermenu(); break;
+	}
+}
+
+void attention()
+{
+	system("cls");
+	gotoxy(80, 16); printf("************注意*************\n");
+	gotoxy(80, 18); printf("*                          *\n");
+	gotoxy(80, 19); printf("*        是否借阅此书？      *\n");
+	gotoxy(80, 20); printf("*    1.确定      2.取消     *\n");
+	gotoxy(80, 20); printf("*                          *\n");
+	gotoxy(80, 22); printf("****************************\n");
+}
+
+void CheckBor()
+{
+	struct BOOK* head = (struct BOOK*)malloc(sizeof(struct BOOK));
+	struct BOOK* q = (struct BOOK*)malloc(sizeof(struct BOOK));
+	head->next = NULL;
+	FileRead(head);
+	char ch[50];
+	system("cls");
+	gotoxy(80, 15); printf("请输入需要查询图书的编号或书名或作者：");
+	gotoxy(80, 17); scanf("%s", ch);
+	system("cls");
+	int t = 0;
+	q = head;
+	while (q->next != NULL)
+	{
+		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0 || strcmp(ch, q->next->writer) == 0)
+		{
+			gotoxy(33, 6); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格         图书数量\n");
+			gotoxy(33, 8); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 9 + t); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 + t); printf("%s", q->next->bookname);
+			gotoxy(69, 9 + t); printf("%s", q->next->writer);
+			gotoxy(82, 9 + t); printf("%s", q->next->leibie);
+			gotoxy(99, 9 + t); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 + t); printf("%s", q->next->data);
+			gotoxy(131, 9 + t); printf("%g", q->next->price);
+			gotoxy(150, 9 + t); printf("%d\n", q->next->num);
+			t += 2;
+		}
+		q = q->next;
+	}
+
+	gotoxy(80, 15); printf("请输入需要借阅图书的编号：");
+	gotoxy(80, 17); scanf("%s", ch);
+	q = head;
+	while (q->next != NULL)
+	{
+		if (strcmp(ch, q->next->bianhao) == 0 || strcmp(ch, q->next->bookname) == 0 || strcmp(ch, q->next->writer) == 0)
+		{
+			gotoxy(33, 6); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 7); printf("图书编号        书名         作者         图书类别         出版方         出版日期         图书价格         图书数量\n");
+			gotoxy(33, 8); printf("----------------------------------------------------------------------------------------------------------------------------------\n");
+			gotoxy(40, 9 ); printf("%s", q->next->bianhao);
+			gotoxy(55, 9 ); printf("%s", q->next->bookname);
+			gotoxy(69, 9 ); printf("%s", q->next->writer);
+			gotoxy(82, 9 ); printf("%s", q->next->leibie);
+			gotoxy(99, 9 ); printf("%s", q->next->chubanfang);
+			gotoxy(114, 9 ); printf("%s", q->next->data);
+			gotoxy(131, 9 ); printf("%g", q->next->price);
+			gotoxy(150, 9 ); printf("%d\n", q->next->num);
+		}
+		q = q->next;
+	}
+loop:
+	{	
+		attention();
+		char ch = getch();
+		switch (ch)
+		{
+		case '1':FileSaveBor(); break;
+		case '2':system("cls"); gotoxy(90, 19); printf("已取消借阅！\n"); Sleep(1000); usermenu();
+		default: goto loop; break;
+		}
+	}
+}
+
+void FileSaveBor()
+{
+	FILE *fp = fopen("MyBor.txt", "wt");
+	if (fp == NULL)
+	{
+		printf("打开文件失败！\n");
+		return 0;
+	}
+
+}
+*/
